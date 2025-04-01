@@ -11,10 +11,10 @@ using Ket
     Return a positive operator-valued measure (POVM) ``{E_i}_{i=1}^N`` and probability P such that if we observe ``E_i`` with average probability P we are in state ``ρ_i``
     
     # Arguments
-    - ρ list of state to be discriminated
-    - q (optional) list of probabilities associated with the state ρ, if not provided, uniform probability is assumed
-    - primal (optional) if false, compute the dual of the optimization problem, default: True
-    
+    - ρ: list of state to be discriminated
+    - q: (optional) list of probabilities associated with the state ρ, if not provided, uniform probability is assumed
+    - primal: (optional) if false, compute the dual of the optimization problem, default: True
+
     # Examples
     ```
     julia> Ψ = LinearAlgebra.Hermitian([1 0; 0 0])  # |0><0|
@@ -27,7 +27,7 @@ using Ket
 
 """
 function state_discrimination(ρ::Vector{<:LinearAlgebra.Hermitian},q::Vector{<:Any} = Float64[], primal = true::Bool)
-    model = Model(() -> Hypatia.Optimizer(verbose = true))
+    model = Model(() -> Hypatia.Optimizer(verbose = false))
     N = length(ρ)
     d = maximum(size(ρ[1]))
     set_silent(model)
@@ -53,14 +53,13 @@ function state_discrimination(ρ::Vector{<:LinearAlgebra.Hermitian},q::Vector{<:
                 sum(q[i] * real(LinearAlgebra.tr(ρ[i] * E[i])) for i in 1:N),
             )
         end
-        optimize!(model)
     else # solve the dual
         E =@variable(model, [1:d, 1:d] in HermitianPSDCone())
         for i in 1:N
             if isempty(q)
                 @constraint(model, E >= (ρ[i]/N), HermitianPSDCone() )
             else
-                @constraint(model, E >= (ρ[i]/q[i]), HermitianPSDCone() )
+                @constraint(model, E >= (ρ[i]*q[i]), HermitianPSDCone() )
             end
         end
         @objective(
@@ -74,26 +73,8 @@ function state_discrimination(ρ::Vector{<:LinearAlgebra.Hermitian},q::Vector{<:
     return E, objective_value(model)
 end
 
-N = 2
-d= 2
-ρ = [random_state(d) for i in 1:N]
-#ρ = 0.5 * [LinearAlgebra.Hermitian([[1,0] [0,1]])]
-#ρ = 0.5 * [[[1,1] [1,1]],[[1,-1] [-1,1]]] # discriminate between plus and minus
-
-Ψ = LinearAlgebra.Hermitian([1 0; 0 0])         # |0><0|
-Φ = LinearAlgebra.Hermitian(0.5 * [1 1; 1 1])   # |+><+|
-
-E, P = state_discrimination([Ψ,Φ],[0.3,0.7])
-println(P)
-
-println(state_discrimination([LinearAlgebra.Hermitian([1 0; 0 0]),LinearAlgebra.Hermitian([0 0; 0 1])])[2])
-
-function a(b::Integer) 
-    println(b)
-end
 
 export state_discrimination
-export a
 
 
 end
