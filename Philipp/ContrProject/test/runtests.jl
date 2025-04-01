@@ -15,9 +15,11 @@ using Ket
 end
 
 @testset "Dual Tests" begin
-    Ψ = random_state(2)
-    Φ = random_state(2)
-    @test state_discrimination([Ψ, Φ])[2] ≈ state_discrimination([Ψ, Φ],[],false)[2] 
+    for i = 1:5
+        Ψ = random_state(i)
+        Φ = random_state(i)
+        @test state_discrimination([Ψ, Φ])[2] ≈ state_discrimination([Ψ, Φ],[],false)[2]
+    end 
 end
 
 

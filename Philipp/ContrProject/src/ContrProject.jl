@@ -10,6 +10,11 @@ using Ket
 
     Return a positive operator-valued measure (POVM) ``{E_i}_{i=1}^N`` and probability P such that if we observe ``E_i`` with average probability P we are in state ``ρ_i``
     
+    # Arguments
+    - ρ list of state to be discriminated
+    - q (optional) list of probabilities associated with the state ρ, if not provided, uniform probability is assumed
+    - primal (optional) if false, compute the dual of the optimization problem, default: True
+    
     # Examples
     ```
     julia> Ψ = LinearAlgebra.Hermitian([1 0; 0 0])  # |0><0|
@@ -21,7 +26,7 @@ using Ket
     ```
 
 """
-function state_discrimination(ρ::Vector{<:LinearAlgebra.Hermitian},q::Vector{Float64} = Float64[], primal = true::Bool)
+function state_discrimination(ρ::Vector{<:LinearAlgebra.Hermitian},q::Vector{<:Any} = Float64[], primal = true::Bool)
     model = Model(() -> Hypatia.Optimizer(verbose = true))
     N = length(ρ)
     d = maximum(size(ρ[1]))
