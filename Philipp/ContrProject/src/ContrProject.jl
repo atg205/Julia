@@ -6,7 +6,7 @@ using Hypatia
 using Ket
 
 """
-    state_discrimination(p[, primal=true])
+    state_discrimination(p[,q=[], primal=true])
 
     Return a positive operator-valued measure (POVM) ``{E_i}_{i=1}^N`` and probability P such that if we observe ``E_i`` with average probability P we are in state ``ρ_i``
     
