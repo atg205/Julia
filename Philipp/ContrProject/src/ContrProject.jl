@@ -5,6 +5,13 @@ import SCS
 using Hypatia
 using Ket
 
+
+```@meta
+DocTestSetup = quote
+    using LinearAlgebra
+end
+```
+
 """
     state_discrimination(p[,q=[], primal=true])
 
@@ -80,10 +87,11 @@ Return a positive operator-valued measure (POVM) ``{E_i}_{i=1}^N`` using the pre
 
 # Examples
 ```
-julia> plus = LinearAlgebra.Hermitian(1/2 * [1 1; 1 1])
-julia> zero = LinearAlgebra.Hermitian([1 0; 0 0])
+julia> using LinearAlgebra
+julia> plus = Hermitian(1/2 * [1 1; 1 1])
+julia> zero = Hermitian([1 0; 0 0])
 julia> E = pretty_good_povm(plus,zero)
-julia> LinearAlgebra.tr(E[1]*plus)
+julia> tr(E[1]*plus)
 0.8535533905932735
 ```
 """
@@ -103,6 +111,6 @@ end
 
 
 export state_discrimination
-export pretty_good_measurements
+export pretty_good_povm
 
 end
