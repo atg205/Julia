@@ -2,6 +2,9 @@ using ContrProject
 using Test
 using LinearAlgebra
 using Ket
+using Documenter
+
+doctest(ContrProject, manual=false)
 
 @testset "Basic tests" begin
     Ψ = LinearAlgebra.Hermitian([1 0; 0 0])         # |0><0|
