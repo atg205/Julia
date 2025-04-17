@@ -87,6 +87,7 @@ Return a positive operator-valued measure (POVM) ``{E_i}_{i=1}^N`` using the pre
 
 # Examples
 ```
+jldoctest
 julia> using LinearAlgebra
 julia> plus = Hermitian(1/2 * [1 1; 1 1])
 julia> zero = Hermitian([1 0; 0 0])
